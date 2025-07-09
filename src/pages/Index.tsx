@@ -1,443 +1,470 @@
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
+  SidebarHeader,
+  SidebarInset,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarProvider,
+  SidebarRail,
+  SidebarSeparator,
+  SidebarTrigger,
+} from "@/components/ui/sidebar";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
-import { Separator } from "@/components/ui/separator";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Input } from "@/components/ui/input";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import Icon from "@/components/ui/icon";
 import { useState } from "react";
 
 const Index = () => {
-  const [activeTab, setActiveTab] = useState("dashboard");
-
-  const tasks = [
-    {
-      id: 1,
-      title: "Настройка аутентификации",
-      status: "todo",
-      priority: "high",
-      assignee: "Алексей",
-    },
-    {
-      id: 2,
-      title: "Разработка API",
-      status: "inprogress",
-      priority: "medium",
-      assignee: "Мария",
-    },
-    {
-      id: 3,
-      title: "Тестирование UI",
-      status: "done",
-      priority: "low",
-      assignee: "Иван",
-    },
-    {
-      id: 4,
-      title: "Написание документации",
-      status: "todo",
-      priority: "medium",
-      assignee: "Анна",
-    },
-  ];
+  const [activeProject, setActiveProject] = useState("web-project");
+  const [draggedTask, setDraggedTask] = useState(null);
 
   const projects = [
-    { id: 1, name: "Веб-платформа", progress: 75, team: "Frontend", tasks: 12 },
+    { id: "web-project", name: "Веб-проект", key: "WEB", type: "Software" },
     {
-      id: 2,
+      id: "mobile-app",
       name: "Мобильное приложение",
-      progress: 45,
-      team: "Mobile",
-      tasks: 8,
+      key: "MOB",
+      type: "Software",
     },
-    { id: 3, name: "API Gateway", progress: 90, team: "Backend", tasks: 6 },
+    { id: "api-gateway", name: "API Gateway", key: "API", type: "Software" },
   ];
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "todo":
-        return "bg-gray-100 text-gray-800";
-      case "inprogress":
-        return "bg-blue-100 text-blue-800";
-      case "done":
-        return "bg-green-100 text-green-800";
-      default:
-        return "bg-gray-100 text-gray-800";
-    }
-  };
+  const [tasks, setTasks] = useState([
+    {
+      id: "WEB-1",
+      title: "Настройка системы аутентификации",
+      description: "Реализовать OAuth 2.0 и JWT токены",
+      status: "todo",
+      priority: "highest",
+      assignee: "Алексей Иванов",
+      reporter: "Мария Петрова",
+      storyPoints: 8,
+      labels: ["backend", "security"],
+    },
+    {
+      id: "WEB-2",
+      title: "Разработка REST API",
+      description: "Создать endpoints для управления пользователями",
+      status: "inprogress",
+      priority: "high",
+      assignee: "Мария Петрова",
+      reporter: "Алексей Иванов",
+      storyPoints: 5,
+      labels: ["backend", "api"],
+    },
+    {
+      id: "WEB-3",
+      title: "Тестирование интерфейса",
+      description: "Написать unit и integration тесты",
+      status: "done",
+      priority: "medium",
+      assignee: "Иван Сидоров",
+      reporter: "Анна Козлова",
+      storyPoints: 3,
+      labels: ["frontend", "testing"],
+    },
+    {
+      id: "WEB-4",
+      title: "Написание документации",
+      description: "Создать техническую документацию API",
+      status: "todo",
+      priority: "low",
+      assignee: "Анна Козлова",
+      reporter: "Мария Петрова",
+      storyPoints: 2,
+      labels: ["docs"],
+    },
+    {
+      id: "WEB-5",
+      title: "Оптимизация производительности",
+      description: "Улучшить время загрузки страниц",
+      status: "inprogress",
+      priority: "medium",
+      assignee: "Иван Сидоров",
+      reporter: "Алексей Иванов",
+      storyPoints: 13,
+      labels: ["frontend", "performance"],
+    },
+  ]);
+
+  const sidebarItems = [
+    {
+      title: "Ваша работа",
+      items: [
+        { title: "Дашборд", icon: "BarChart3", isActive: true },
+        { title: "Назначенные мне", icon: "User", badge: "12" },
+        { title: "Недавние", icon: "Clock" },
+        { title: "Созданные мной", icon: "UserPlus" },
+        { title: "Просмотренные", icon: "Eye" },
+      ],
+    },
+    {
+      title: "Проекты",
+      items: [
+        { title: "Веб-проект", icon: "Globe", key: "WEB" },
+        { title: "Мобильное приложение", icon: "Smartphone", key: "MOB" },
+        { title: "API Gateway", icon: "Server", key: "API" },
+      ],
+    },
+    {
+      title: "Фильтры",
+      items: [
+        { title: "Просмотреть все задачи", icon: "List" },
+        { title: "Недавно обновленные", icon: "RefreshCw" },
+        { title: "Активные спринты", icon: "Target" },
+      ],
+    },
+  ];
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
+      case "highest":
+        return "text-red-600";
       case "high":
-        return "bg-red-100 text-red-800";
+        return "text-orange-600";
       case "medium":
-        return "bg-yellow-100 text-yellow-800";
+        return "text-yellow-600";
       case "low":
-        return "bg-green-100 text-green-800";
+        return "text-green-600";
+      case "lowest":
+        return "text-gray-600";
       default:
-        return "bg-gray-100 text-gray-800";
+        return "text-gray-600";
     }
   };
 
-  return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-2">
-                <Icon name="Kanban" size={32} className="text-primary" />
-                <h1 className="text-2xl font-bold text-gray-900">ProjectHub</h1>
-              </div>
-            </div>
-            <div className="flex items-center space-x-4">
-              <Button variant="outline" size="sm">
-                <Icon name="Bell" size={16} className="mr-2" />
-                Уведомления
-              </Button>
-              <Button variant="outline" size="sm">
-                <Icon name="Settings" size={16} className="mr-2" />
-                Настройки
-              </Button>
-              <Button size="sm">
-                <Icon name="Plus" size={16} className="mr-2" />
-                Создать проект
-              </Button>
-            </div>
-          </div>
-        </div>
-      </header>
+  const getPriorityIcon = (priority: string) => {
+    switch (priority) {
+      case "highest":
+        return "ArrowUp";
+      case "high":
+        return "ArrowUp";
+      case "medium":
+        return "ArrowRight";
+      case "low":
+        return "ArrowDown";
+      case "lowest":
+        return "ArrowDown";
+      default:
+        return "ArrowRight";
+    }
+  };
 
-      {/* Hero Section */}
-      <section className="bg-gradient-to-r from-primary to-secondary text-white py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-5xl font-bold mb-6">
-            Управление проектами нового поколения
-          </h2>
-          <p className="text-xl mb-8 max-w-3xl mx-auto text-primary-foreground/90">
-            Планируйте, отслеживайте и управляйте проектами с помощью
-            современных инструментов. Система ролей, трекинг времени и
-            автоматизация процессов.
-          </p>
-          <div className="flex justify-center space-x-4">
-            <Button size="lg" variant="secondary" className="text-lg px-8">
-              Начать бесплатно
-            </Button>
-            <Button
-              size="lg"
-              variant="outline"
-              className="text-lg px-8 border-white text-white hover:bg-white hover:text-primary"
+  const handleDragStart = (e, task) => {
+    setDraggedTask(task);
+    e.dataTransfer.effectAllowed = "move";
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "move";
+  };
+
+  const handleDrop = (e, newStatus) => {
+    e.preventDefault();
+    if (draggedTask) {
+      setTasks(
+        tasks.map((task) =>
+          task.id === draggedTask.id ? { ...task, status: newStatus } : task,
+        ),
+      );
+      setDraggedTask(null);
+    }
+  };
+
+  const TaskCard = ({ task }) => (
+    <div
+      draggable
+      onDragStart={(e) => handleDragStart(e, task)}
+      className="bg-white rounded-lg p-3 shadow-sm border hover:shadow-md transition-shadow cursor-grab active:cursor-grabbing"
+    >
+      <div className="flex items-start justify-between mb-2">
+        <div className="flex items-center space-x-2">
+          <Icon name="FileText" size={16} className="text-blue-600" />
+          <span className="text-sm font-medium text-gray-600">{task.id}</span>
+        </div>
+        <div className="flex items-center space-x-1">
+          <Icon
+            name={getPriorityIcon(task.priority)}
+            size={14}
+            className={getPriorityColor(task.priority)}
+          />
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
+                <Icon name="MoreHorizontal" size={14} />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuItem>Редактировать</DropdownMenuItem>
+              <DropdownMenuItem>Удалить</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      </div>
+      <h4 className="font-medium text-sm mb-2 text-gray-900">{task.title}</h4>
+      <p className="text-xs text-gray-600 mb-3">{task.description}</p>
+      <div className="flex items-center justify-between">
+        <div className="flex items-center space-x-2">
+          {task.labels.map((label, index) => (
+            <Badge
+              key={index}
+              variant="secondary"
+              className="text-xs px-2 py-0.5"
             >
-              Посмотреть демо
-            </Button>
-          </div>
+              {label}
+            </Badge>
+          ))}
         </div>
-      </section>
+        <div className="flex items-center space-x-2">
+          <span className="text-xs text-gray-500">{task.storyPoints} SP</span>
+          <Avatar className="h-6 w-6">
+            <AvatarFallback className="text-xs">
+              {task.assignee
+                .split(" ")
+                .map((n) => n[0])
+                .join("")}
+            </AvatarFallback>
+          </Avatar>
+        </div>
+      </div>
+    </div>
+  );
 
-      {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="dashboard">Дашборд</TabsTrigger>
-            <TabsTrigger value="kanban">Канбан</TabsTrigger>
-            <TabsTrigger value="reports">Отчеты</TabsTrigger>
-          </TabsList>
-
-          {/* Dashboard Tab */}
-          <TabsContent value="dashboard" className="mt-8">
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              {/* Projects */}
-              <Card className="lg:col-span-2">
-                <CardHeader>
-                  <CardTitle className="flex items-center">
-                    <Icon name="FolderOpen" size={20} className="mr-2" />
-                    Активные проекты
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    {projects.map((project) => (
-                      <div
-                        key={project.id}
-                        className="flex items-center justify-between p-4 bg-gray-50 rounded-lg"
-                      >
-                        <div className="flex-1">
-                          <h3 className="font-semibold text-gray-900">
-                            {project.name}
-                          </h3>
-                          <p className="text-sm text-gray-500">
-                            {project.team} • {project.tasks} задач
-                          </p>
-                          <Progress value={project.progress} className="mt-2" />
-                        </div>
-                        <div className="ml-4 text-right">
-                          <span className="text-sm font-medium text-gray-900">
-                            {project.progress}%
-                          </span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Quick Stats */}
-              <div className="space-y-6">
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center">
-                      <Icon name="BarChart3" size={20} className="mr-2" />
-                      Статистика
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-4">
-                      <div className="flex justify-between">
-                        <span className="text-sm text-gray-600">
-                          Всего задач
-                        </span>
-                        <span className="font-semibold">26</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-sm text-gray-600">Выполнено</span>
-                        <span className="font-semibold text-green-600">12</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-sm text-gray-600">В работе</span>
-                        <span className="font-semibold text-blue-600">8</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-sm text-gray-600">
-                          Просрочено
-                        </span>
-                        <span className="font-semibold text-red-600">2</span>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center">
-                      <Icon name="Users" size={20} className="mr-2" />
-                      Команды
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-3">
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm">Frontend</span>
-                        <Badge variant="secondary">4 участника</Badge>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm">Backend</span>
-                        <Badge variant="secondary">3 участника</Badge>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm">Mobile</span>
-                        <Badge variant="secondary">2 участника</Badge>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
+  return (
+    <SidebarProvider>
+      <div className="flex h-screen bg-gray-50">
+        {/* Sidebar */}
+        <Sidebar className="border-r border-gray-200 bg-white">
+          <SidebarHeader className="border-b border-gray-200 px-4 py-3">
+            <div className="flex items-center space-x-2">
+              <div className="w-8 h-8 bg-blue-600 rounded flex items-center justify-center">
+                <Icon name="Zap" size={20} className="text-white" />
+              </div>
+              <div>
+                <h1 className="text-lg font-semibold text-gray-900">Jira</h1>
+                <p className="text-xs text-gray-500">Управление проектами</p>
               </div>
             </div>
-          </TabsContent>
+          </SidebarHeader>
 
-          {/* Kanban Tab */}
-          <TabsContent value="kanban" className="mt-8">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {/* To Do Column */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center justify-between">
-                    <span>К выполнению</span>
-                    <Badge variant="secondary">2</Badge>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    {tasks
-                      .filter((task) => task.status === "todo")
-                      .map((task) => (
-                        <div
-                          key={task.id}
-                          className="p-4 bg-white border rounded-lg hover:shadow-md transition-shadow cursor-pointer"
+          <SidebarContent>
+            <div className="px-3 py-2">
+              <Input
+                placeholder="Поиск задач..."
+                className="h-8"
+                prefix={<Icon name="Search" size={14} />}
+              />
+            </div>
+
+            {sidebarItems.map((section, index) => (
+              <SidebarGroup key={index}>
+                <SidebarGroupLabel className="text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                  {section.title}
+                </SidebarGroupLabel>
+                <SidebarGroupContent>
+                  <SidebarMenu>
+                    {section.items.map((item, itemIndex) => (
+                      <SidebarMenuItem key={itemIndex}>
+                        <SidebarMenuButton
+                          isActive={item.isActive}
+                          className="w-full justify-start text-sm"
                         >
-                          <h4 className="font-medium mb-2">{task.title}</h4>
-                          <div className="flex items-center justify-between">
-                            <Badge className={getPriorityColor(task.priority)}>
-                              {task.priority === "high"
-                                ? "Высокий"
-                                : task.priority === "medium"
-                                  ? "Средний"
-                                  : "Низкий"}
+                          <Icon name={item.icon} size={16} />
+                          <span>{item.title}</span>
+                          {item.badge && (
+                            <Badge
+                              variant="secondary"
+                              className="ml-auto text-xs"
+                            >
+                              {item.badge}
                             </Badge>
-                            <span className="text-sm text-gray-500">
-                              {task.assignee}
+                          )}
+                          {item.key && (
+                            <span className="ml-auto text-xs text-gray-500">
+                              {item.key}
                             </span>
-                          </div>
-                        </div>
-                      ))}
+                          )}
+                        </SidebarMenuButton>
+                      </SidebarMenuItem>
+                    ))}
+                  </SidebarMenu>
+                </SidebarGroupContent>
+                {index < sidebarItems.length - 1 && <SidebarSeparator />}
+              </SidebarGroup>
+            ))}
+          </SidebarContent>
+
+          <SidebarFooter className="border-t border-gray-200 px-4 py-3">
+            <div className="flex items-center space-x-2">
+              <Avatar className="h-8 w-8">
+                <AvatarFallback>АИ</AvatarFallback>
+              </Avatar>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium text-gray-900">
+                  Алексей Иванов
+                </p>
+                <p className="text-xs text-gray-500">alexey@company.com</p>
+              </div>
+              <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                <Icon name="Settings" size={16} />
+              </Button>
+            </div>
+          </SidebarFooter>
+
+          <SidebarRail />
+        </Sidebar>
+
+        {/* Main Content */}
+        <SidebarInset className="flex-1">
+          {/* Header */}
+          <header className="bg-white border-b border-gray-200 px-6 py-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-4">
+                <SidebarTrigger className="md:hidden" />
+                <div className="flex items-center space-x-2">
+                  <Icon name="Globe" size={20} className="text-blue-600" />
+                  <h1 className="text-xl font-semibold text-gray-900">
+                    Веб-проект
+                  </h1>
+                  <Badge variant="secondary" className="text-xs">
+                    WEB
+                  </Badge>
+                </div>
+              </div>
+              <div className="flex items-center space-x-3">
+                <Button variant="outline" size="sm">
+                  <Icon name="Filter" size={16} className="mr-2" />
+                  Фильтры
+                </Button>
+                <Button variant="outline" size="sm">
+                  <Icon name="Users" size={16} className="mr-2" />
+                  Поделиться
+                </Button>
+                <Button size="sm">
+                  <Icon name="Plus" size={16} className="mr-2" />
+                  Создать
+                </Button>
+              </div>
+            </div>
+          </header>
+
+          {/* Kanban Board */}
+          <main className="flex-1 p-6">
+            <div className="mb-6">
+              <h2 className="text-lg font-semibold text-gray-900 mb-2">
+                Доска задач
+              </h2>
+              <div className="flex items-center space-x-4 text-sm text-gray-600">
+                <span>{tasks.length} задач</span>
+                <span>•</span>
+                <span>Активный спринт</span>
+                <span>•</span>
+                <span>Обновлено 2 мин назад</span>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 h-full">
+              {/* To Do Column */}
+              <div className="bg-gray-100 rounded-lg p-4">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="font-medium text-gray-900">К выполнению</h3>
+                  <div className="flex items-center space-x-2">
+                    <Badge variant="secondary" className="text-xs">
+                      {tasks.filter((task) => task.status === "todo").length}
+                    </Badge>
+                    <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
+                      <Icon name="Plus" size={14} />
+                    </Button>
                   </div>
-                </CardContent>
-              </Card>
+                </div>
+                <div
+                  className="space-y-3 min-h-[200px]"
+                  onDragOver={handleDragOver}
+                  onDrop={(e) => handleDrop(e, "todo")}
+                >
+                  {tasks
+                    .filter((task) => task.status === "todo")
+                    .map((task) => (
+                      <TaskCard key={task.id} task={task} />
+                    ))}
+                </div>
+              </div>
 
               {/* In Progress Column */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center justify-between">
-                    <span>В работе</span>
-                    <Badge variant="secondary">1</Badge>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    {tasks
-                      .filter((task) => task.status === "inprogress")
-                      .map((task) => (
-                        <div
-                          key={task.id}
-                          className="p-4 bg-white border rounded-lg hover:shadow-md transition-shadow cursor-pointer"
-                        >
-                          <h4 className="font-medium mb-2">{task.title}</h4>
-                          <div className="flex items-center justify-between">
-                            <Badge className={getPriorityColor(task.priority)}>
-                              {task.priority === "high"
-                                ? "Высокий"
-                                : task.priority === "medium"
-                                  ? "Средний"
-                                  : "Низкий"}
-                            </Badge>
-                            <span className="text-sm text-gray-500">
-                              {task.assignee}
-                            </span>
-                          </div>
-                        </div>
-                      ))}
+              <div className="bg-blue-50 rounded-lg p-4">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="font-medium text-gray-900">В работе</h3>
+                  <div className="flex items-center space-x-2">
+                    <Badge variant="secondary" className="text-xs">
+                      {
+                        tasks.filter((task) => task.status === "inprogress")
+                          .length
+                      }
+                    </Badge>
+                    <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
+                      <Icon name="Plus" size={14} />
+                    </Button>
                   </div>
-                </CardContent>
-              </Card>
+                </div>
+                <div
+                  className="space-y-3 min-h-[200px]"
+                  onDragOver={handleDragOver}
+                  onDrop={(e) => handleDrop(e, "inprogress")}
+                >
+                  {tasks
+                    .filter((task) => task.status === "inprogress")
+                    .map((task) => (
+                      <TaskCard key={task.id} task={task} />
+                    ))}
+                </div>
+              </div>
 
               {/* Done Column */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center justify-between">
-                    <span>Выполнено</span>
-                    <Badge variant="secondary">1</Badge>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    {tasks
-                      .filter((task) => task.status === "done")
-                      .map((task) => (
-                        <div
-                          key={task.id}
-                          className="p-4 bg-white border rounded-lg hover:shadow-md transition-shadow cursor-pointer"
-                        >
-                          <h4 className="font-medium mb-2">{task.title}</h4>
-                          <div className="flex items-center justify-between">
-                            <Badge className={getPriorityColor(task.priority)}>
-                              {task.priority === "high"
-                                ? "Высокий"
-                                : task.priority === "medium"
-                                  ? "Средний"
-                                  : "Низкий"}
-                            </Badge>
-                            <span className="text-sm text-gray-500">
-                              {task.assignee}
-                            </span>
-                          </div>
-                        </div>
-                      ))}
+              <div className="bg-green-50 rounded-lg p-4">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="font-medium text-gray-900">Выполнено</h3>
+                  <div className="flex items-center space-x-2">
+                    <Badge variant="secondary" className="text-xs">
+                      {tasks.filter((task) => task.status === "done").length}
+                    </Badge>
+                    <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
+                      <Icon name="Plus" size={14} />
+                    </Button>
                   </div>
-                </CardContent>
-              </Card>
+                </div>
+                <div
+                  className="space-y-3 min-h-[200px]"
+                  onDragOver={handleDragOver}
+                  onDrop={(e) => handleDrop(e, "done")}
+                >
+                  {tasks
+                    .filter((task) => task.status === "done")
+                    .map((task) => (
+                      <TaskCard key={task.id} task={task} />
+                    ))}
+                </div>
+              </div>
             </div>
-          </TabsContent>
-
-          {/* Reports Tab */}
-          <TabsContent value="reports" className="mt-8">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center">
-                    <Icon name="Clock" size={20} className="mr-2" />
-                    Трекинг времени
-                  </CardTitle>
-                  <CardDescription>
-                    Отчет по времени за последнюю неделю
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm">Алексей</span>
-                      <span className="font-semibold">42ч 30м</span>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm">Мария</span>
-                      <span className="font-semibold">38ч 15м</span>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm">Иван</span>
-                      <span className="font-semibold">35ч 45м</span>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm">Анна</span>
-                      <span className="font-semibold">40ч 20м</span>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center">
-                    <Icon name="TrendingUp" size={20} className="mr-2" />
-                    Аналитика
-                  </CardTitle>
-                  <CardDescription>Производительность команды</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <div>
-                      <div className="flex justify-between text-sm mb-2">
-                        <span>Выполнено задач</span>
-                        <span>75%</span>
-                      </div>
-                      <Progress value={75} />
-                    </div>
-                    <div>
-                      <div className="flex justify-between text-sm mb-2">
-                        <span>Соблюдение дедлайнов</span>
-                        <span>88%</span>
-                      </div>
-                      <Progress value={88} />
-                    </div>
-                    <div>
-                      <div className="flex justify-between text-sm mb-2">
-                        <span>Качество кода</span>
-                        <span>92%</span>
-                      </div>
-                      <Progress value={92} />
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          </TabsContent>
-        </Tabs>
-      </main>
-    </div>
+          </main>
+        </SidebarInset>
+      </div>
+    </SidebarProvider>
   );
 };
 
